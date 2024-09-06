@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "inductive-gift-355101",
+  "private_key_id": "87f774556af86c61268024699e35a4a8f17a91e7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDSQnb0mPLF6o/z\nNZ1G7vG5IkVzVkzYZUZtiGEDpECGlF2C4iFAgZ8mTqreUTfH6JuFPY/vXCcWkr9K\n2J4H/U8oaETrq6ZonNY5+Ucof2hrlc0Wl61gsr2hbiuYW6dV3AiCgUjzEefsU25C\nzYmhSkTvVtemerfDr7sgTsDOoVHsADIKodTTQS23GT+bh9xGxI01EpsVeSW9XPlx\ngjBAHMa01fM/JbC/+JZRNgAsJxbdb2RwgPkNOJY2gpKYGqmzEpMaRifNZFcgIRZY\n/k+jWPWJGDLtAQbTxHuTpSQQIrRPz9bbdwZxkwgT9kmBNOUO1+DrYm0V76xqxjjp\nRSzJ/pkrAgMBAAECggEAEo41C0mthdPj16CFUcDn6jZhD1hauG+E80j+2XXBurQV\n5eVo7oAXTdJ8IoSOZKuy1eO588jGgP0luUg792kzzCrE3PuCrbwcQnTXrSDuqS1I\n3Sk47s4MuCtjLjNLJY5L3fXk5zakU2cwKuBoDf43mTD+dRMNa/fyjrEEiPe++rxc\nunTdVz+yuwVp6Aj8Kuzm9UL0bHdwm0nX9JtzZuARY/h4FNp2flEyTDENL7Z/wp4Y\n/n+GUQTUct4Fprlq7tX4Wrg0ywCYXSe5Dxz+oIY8nQKiSrGf4K0pudP2WKmaIlsI\n2D9HUdfDcu+e6/pF8h/6iN6ZyX/NOTE6IlPIj28vkQKBgQDqg38gAwG5rAohzleS\ntNwUxvr2hKsrsSQxhYEfx8VhsVFG5L64CPURQIVOM9Uw9M2RnPiIZrykZLJ9crWl\nmAUOMlURlkuJ6qjN1VOM/WkJC/cvtOnwkiJXtNEq0xXPX0K9AkiAdGqLgpwupN+y\nhY+GNww5ctg/kI449pJT/YZOKQKBgQDlhhdeimofkrer6Kamu11BSVBi+rda9x49\n+tBrWzIg5FWIA5gO4qud2Y2XznYg0SocRpuCustQ9AlV3oMsjOpK4HOJET/8vkCM\nFL4dVYDc5b1wGvRQxd+WmXPuSu+0ajx9bTwOsiTnNaqUoUrqyKP2oisXJG4iFBRa\nnhZD/jevMwKBgG8yaL3iDxheBfPfplCO52gGrYrkf1FZTkMY/Y/3JpVbAaHu5qvW\nu3UxtcPN+gGbojmwR3xN0pbUlHm9QXpCaetAXGvZavn7RY1L4LESm5JJlSyOyPpk\nIFqcBy4aJtZMYhXDFmOqT7bU+H95eARrJhHK2kYHOZhyT62c5OdkaCF5AoGAClXC\nYaBr7OYHXTdJocJYDaOGeh59+Rudgf70OZFOrYp6i3hV9X2haqcsKATE7u9cLQ/E\n2tscYpXKgdJWJ8BkoGCA81ASiIfskiIw+VMrTUcPA6hDDgwK6FYakUVQi9goxyEP\nDj5ZSQvylWS54d6M+4ML26vpRaGP1RC/QeqFiV8CgYEA6IA2F8xg2Il8saf7N3HI\nYLb7OowWsy/imRMhpRejroZOPQbmm+dAtJT55eWytIKuNkZ/yHw+gK444SKfyIkc\nvRi+ikMUKNaYLl3VcnKzz6hV1x5/hkDWmrp2SZNOaGlXnOMgXdI21luFnO4esymf\n6m2yNrkmMnIn9RikfOzwD+E=\n-----END PRIVATE KEY-----\n",
+  "client_email": "burpee-dashboard@inductive-gift-355101.iam.gserviceaccount.com",
+  "client_id": "112347729024686366587",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/burpee-dashboard%40inductive-gift-355101.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
