@@ -1,6 +1,6 @@
-duckdb==0.8.1
-gitdb==4.0.11
-GitPython==3.1.43
+duckdb
+gitdb
+GitPython
 numpy==1.25.2
 openpyxl==3.1.2
 pandas==2.1.1
