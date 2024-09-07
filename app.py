@@ -189,7 +189,7 @@ def chart_workout_heatmap(df):
 
     # Define custom color scale
     custom_color_scale = [
-        [0.0, '#ff3333'],        # Red for value 0
+        [0.0, '#f3efef'],        # Red for value 0
         [0.0005, '#ffac33'],        # Red for value 0
         [0.02, '#fffc33'],        # Red for value 0
         [0.3, '#71ff33'],        # Red for value 0
