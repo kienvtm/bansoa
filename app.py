@@ -61,10 +61,24 @@ def get_data_daily_summary(select_date):
     dta_mtd_actual = db.execute(query).fetch_df()
     return dta_mtd_actual
 
+@st.cache_data
+def get_data_daily(from_date, select_date):
+    query = rf'''
+    SELECT 
+        *
+    FROM data_daily a 
+    WHERE report_date between '{from_date}'::date and '{select_date}'::date
+    '''
+    # st.write(query)
+    dta_mtd_actual = db.execute(query).fetch_df()
+    return dta_mtd_actual
+
 # Function to generate random color
+# @st.cache_data
 def random_color():
     return '#{:02x}{:02x}{:02x}'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
+@st.cache_data
 def chart_burpee_target(data):
 
     data = data.sort_values(by="percentage_mtd_actualplete")
@@ -98,6 +112,7 @@ def chart_burpee_target(data):
     )
     return fig
 
+@st.cache_data
 def chart_daily(data):
     # Create the horizontal bar chart
     data = data.sort_values(by="mtd_flg_daily")
@@ -130,6 +145,7 @@ def chart_daily(data):
     )
     return fig
 
+@st.cache_data
 def summary_kpi(dta_daily_summary):
     fig_total = go.Figure(go.Indicator(
         # mode = "number+delta",
@@ -149,6 +165,87 @@ def summary_kpi(dta_daily_summary):
     ))
     return fig_total
 
+@st.cache_data
+def chart_workout_heatmap(df):
+    # Pivoting the dataframe
+    heatmap_data = df.pivot(index='user', columns='report_date', values='Total')
+
+    # Create custom hover text with burpee and run details
+    hover_text = df.apply(
+        lambda row: f'''
+    {row['report_date'].strftime('%Y-%m-%d')}<br>
+    {row['user']}<br>
+    Burpee: {row['Burpee']:,.0f}<br>
+    Core: {row['Core']:,.0f}<br>
+    Pushup: {row['Pushup']:,.0f}<br>
+    Squat: {row['Squat']:,.0f}<br>
+    Run: {row['Run']:,.1f}km
+    ''', 
+        axis=1).values.reshape(heatmap_data.shape)
+
+    # Create text array that replaces 0 with '-'
+    text_data = heatmap_data.applymap(lambda x: '' if x == 0 else f"{x:,.0f}")
+
+
+    # Define custom color scale
+    custom_color_scale = [
+        [0.0, '#ff3333'],        # Red for value 0
+        [0.0005, '#ffac33'],        # Red for value 0
+        [0.02, '#fffc33'],        # Red for value 0
+        [0.3, '#71ff33'],        # Red for value 0
+        [0.4, '#33ffe9'],        # Red for value 0
+        [0.5, '#337aff'],        # Red for value 0
+        # [0.6, '#be33ff'],        # Red for value 0
+        # [0.7, '#fc33ff'],        # Red for value 0
+        # [0.8, '#fc33ff'],        # Red for value 0
+        [1, '#fc33ff'],        # Red for value 0
+    ]
+
+    # Create the heatmap
+    fig = go.Figure(data=go.Heatmap(
+        z=heatmap_data.values,
+        x=heatmap_data.columns,
+        y=heatmap_data.index,
+        # colorscale='blackbody',
+        # colorscale='rainbow_r',
+        # colorscale='plasma',
+        # colorscale='turbo',
+        # colorscale='blackbody',
+        # colorscale='plotly3_r',
+        # colorscale='jet_r',
+        # colorscale='hsv',
+        colorscale=custom_color_scale,
+        hoverongaps=True,
+        xgap=2,  # Horizontal gap between the cells
+        ygap=2,   # Vertical gap between the cells
+        # colorscale=[[0, 'white'], [1, 'green']],  # Color scale from white to green
+        # text=heatmap_data.values,  # Data text to display in cells
+        hoverinfo='text',  # Show custom hover information
+        hovertext=hover_text,  # Set the custom hover text
+        text=text_data.values,  # Use the hover text for detailed info
+        texttemplate="%{text}",  # Template for displaying the text
+        textfont={"size": 10},   # Adjust font size of the text
+        showscale=True  # Display the color scale
+    ))
+
+    # # Update texttemplate to display 0 as '-'
+    # fig.update_traces(texttemplate="%{z:,.0f}", 
+    #                 customdata=heatmap_data.values,
+    #                 text=heatmap_data.applymap(lambda x: '-' if x == 0 else x))
+
+    # Update layout
+    fig.update_layout(
+        # xaxis_title='Date',
+        # yaxis_title='User',
+        title='Workout Calendar',
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=False),
+        # plot_bgcolor='grey',  # Set the plot background color to black (for borders)
+        # paper_bgcolor='white',  # Keep the paper background 
+        margin=dict(l=0.1, r=0.1, t=50, b=0.1),  # Adjust outer margins for thinner outer border
+    )
+    return fig
+
 tab1, tab2 = st.tabs(['Summary Report','Individual Report'])
 
 # Get the current date
@@ -160,6 +257,7 @@ with tab1:
     with col1:
         start_of_month = current_date.replace(day=1)
 
+        # from_date = st.date_input('Select date', value=start_of_month)
         select_date = st.date_input('Select date', value=current_date)
 
 
@@ -174,6 +272,8 @@ dta_chart.sort_values(by='percentage_mtd_actualplete', ascending=True, inplace=T
 # st.dataframe(dta_chart)
 
 dta_daily_summary = get_data_daily_summary(select_date)
+
+dta_monthly = get_data_monthly(select_date)
 # st.dataframe(dta_daily_summary)
 
 
@@ -204,10 +304,13 @@ with tab1:
             col3.metric("Core", f"{core:,.0f}")
             col1.metric("Squat", f"{squat:,.0f}")
             col2.metric("Run", f"{run:,.1f}km")
+        # with st.container(border=True):
     with col20:
         with st.container(border=True):
             st.plotly_chart(summary_kpi(dta_daily_summary))
 
+    with st.container(border=True):
+        st.plotly_chart(chart_workout_heatmap(dta_monthly))
 
     col1, col2 = st.columns(2)
     with col1:
