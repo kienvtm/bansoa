@@ -224,7 +224,7 @@ def chart_workout_heatmap(df):
         hovertext=hover_text,  # Set the custom hover text
         text=text_data.values,  # Use the hover text for detailed info
         texttemplate="%{text}",  # Template for displaying the text
-        textfont={"size": 10},   # Adjust font size of the text
+        textfont={"size": 14},   # Adjust font size of the text
         showscale=True  # Display the color scale
     ))
 
