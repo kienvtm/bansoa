@@ -159,7 +159,7 @@ def summary_kpi(dta_daily_summary):
     fig_total.add_trace(go.Bar(
         y = dta_daily_summary['Total'],
         x = dta_daily_summary['report_date'],
-        hovertemplate='<b>%{x}</b>: %{y:,.0f} VND',
+        hovertemplate='<b>%{x}</b>: %{y:,.0f}',
         # text=dta_daily_summary['mtd_actual'],
         textposition='auto'
     ))
