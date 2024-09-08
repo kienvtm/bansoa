@@ -161,7 +161,7 @@ for sheet_name in sheets:
         except Exception as e:
             print(e)
     # tinh toan accumulate
-    dta.to_parquet(rf".\data\daily\dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
+    dta.to_parquet(rf"data/daily/dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
     print(sheet_name)
 
 
