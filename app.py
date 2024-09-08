@@ -29,9 +29,10 @@ def get_data(select_date):
     SELECT 
         *
     FROM data_daily
-    WHERE report_date='{select_date}'
+    WHERE report_date=date_trunc('month', '{select_date}'::date) + interval '1 month' - interval '1 day'
     '''
     dta_mtd_actual = db.execute(query).fetch_df()
+    # st.write(query)
     return dta_mtd_actual
 
 @st.cache_data
