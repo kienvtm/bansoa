@@ -1,4 +1,5 @@
-# %%
+#!/usr/bin/python3
+
 import pygsheets
 from oauth2client.service_account import ServiceAccountCredentials
 from pathlib import Path
