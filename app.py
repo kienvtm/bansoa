@@ -40,7 +40,7 @@ def get_data_monthly(select_date):
     SELECT 
         *
     FROM data_daily a 
-    WHERE date_trunc('month',report_date)=date_trunc('month','{select_date}'::date)
+    WHERE report_month=date_trunc('month','{select_date}'::date)
     '''
     dta_mtd_actual = db.execute(query).fetch_df()
     return dta_mtd_actual
