@@ -4,6 +4,7 @@ import pygsheets
 from oauth2client.service_account import ServiceAccountCredentials
 from pathlib import Path
 import pandas as pd
+import os
 pd.set_option('mode.chained_assignment', None)
 
 # %%
@@ -12,8 +13,9 @@ pd.options.display.max_columns = 0
 
 # %%
 
+os.chdir(Path(__file__).parent)
 # Load the credentials from the JSON file (replace with the path to your file)
-sf_path = r'inductive-gift-355101-48518c54d576.json'
+sf_path = Path(__file__).parent/'inductive-gift-355101-48518c54d576.json'
 gc = pygsheets.authorize(service_account_file=sf_path)
 
 
@@ -162,7 +164,7 @@ for sheet_name in sheets:
         except Exception as e:
             print(e)
     # tinh toan accumulate
-    dta.to_parquet(rf"data/daily/dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
+    dta.to_parquet(Path(__file__).parent/rf"dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
     print(sheet_name)
 
 
