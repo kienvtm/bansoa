@@ -164,7 +164,7 @@ for sheet_name in sheets:
         except Exception as e:
             print(e)
     # tinh toan accumulate
-    dta.to_parquet(Path(__file__).parent/rf"dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
+    dta.to_parquet(Path(__file__).parent/'data'/'daily'/rf"dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
     print(sheet_name)
 
 
