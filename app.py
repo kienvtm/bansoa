@@ -52,7 +52,7 @@ def get_data_daily_summary(select_date):
         report_date
         , sum(Total) Total
     FROM data_daily a 
-    WHERE date_trunc('month',report_date)=date_trunc('month','{select_date}'::date)
+    WHERE report_month=date_trunc('month','{select_date}'::date)
     and report_date<='{select_date}'::date
     group by
         report_date
