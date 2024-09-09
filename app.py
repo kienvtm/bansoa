@@ -11,6 +11,10 @@ import random
 st.set_page_config(layout="wide")
 
 st.title('BẠN SỢ À Report')
+if st.button("Clear All"):
+    # Clear values from *all* all in-memory and on-disk data caches:
+    # i.e. clear values from both square and cube
+    st.cache_data.clear()
 
 # data folder path
 cwd = Path(__file__).parent / 'data' / 'daily'
@@ -20,7 +24,7 @@ dta_daily_path = cwd.joinpath('*.parquet')
 
 
 db = duckdb.connect()
-db.execute(f"CREATE VIEW data_daily AS SELECT * FROM read_parquet('{dta_daily_path}', union_by_name=True)")
+db.execute(f"CREATE or replace temp VIEW data_daily AS SELECT * FROM read_parquet('{dta_daily_path}', union_by_name=True)")
 # db.execute(fr"create or replace temp view data_daily as select * from read_parquet('C:\Users\kienv\bansoa\data\daily\*.parquet', union_by_name=True)")
 
 @st.cache_data
