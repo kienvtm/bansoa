@@ -347,40 +347,63 @@ with tab1:
             st.plotly_chart(chart_daily(dta_chart))
 
 # Tab Individual:
-def daily_chart(df):
+def daily_chart(df, actual_col, target_col):
 
     # Create traces for the actual and budget lines
 
 # Example dataframe
 
-
-    # Example dataframe
-    # data = {
-    #     'report_date': pd.date_range(start='2023-09-01', periods=10, freq='D'),
-    #     'mtd_actual': [200, 300, 250, 400, 450, 500, 600, 550, 700, 650],
-    #     'mtd_target_norm': [220, 320, 270, 390, 430, 480, 620, 560, 710, 670]
-    # }
-
-    # df = pd.DataFrame(data)
+    # Calculate difference and complete percentage
+    df['difference'] = df[actual_col] - df[target_col]
+    df['complete_percentage'] = df[actual_col] / df[target_col]
 
     # Create traces for the actual and budget lines
-    actual_trace = go.Scatter(x=df['report_date'], y=df['mtd_actual'], mode='lines', name='Actual Sales', line=dict(color='blue'))
-    target_trace = go.Scatter(x=df['report_date'], y=df['mtd_target_norm'], mode='lines', name='Budget Sales', line=dict(color='orange'))
+    actual_trace = go.Scatter(
+        x=df['report_date'], 
+        y=df[actual_col], 
+        mode='lines', 
+        name='Actual', 
+        line=dict(color='blue'),
+        customdata=df[['difference', 'complete_percentage']],
+        hovertemplate=(
+            # 'Date: %{x}<br>' +
+            'Actual: %{y:,.0f}<br>' +
+            # 'Target: %{customdata[0]:,.0f}<br>' +
+            'Difference: %{customdata[0]:,.0f}<br>' +
+            'Complete: %{customdata[1]:.2%}<extra></extra>'
+        )
+        )
+    target_trace = go.Scatter(
+        x=df['report_date'], 
+        y=df[target_col], 
+        mode='lines', 
+        name='Target', 
+        line=dict(color='orange'),
+        # customdata=df[['mtd_actual', 'difference', 'complete_percentage']],
+        # hovertemplate=(
+        # 'Date: %{x}<br>' +
+        # 'Actual: %{customdata[0]:,.0f}<br>' +
+        # 'Target: %{y:,.0f}<br>' +
+        # 'Difference: %{customdata[1]:,.0f}<br>' +
+        # 'Complete %: %{customdata[2]:.2%}<extra></extra>'
+        # )
+        )
 
     # Create traces to fill the area between actual and budget sales with green or red
     fill_between_lines = []
 
     for i in range(len(df)-1):
         # If actual >= budget, fill with light green, else fill with light red
-        fillcolor = 'rgba(0, 255, 0, 0.2)' if df['mtd_actual'][i] >= df['mtd_target_norm'][i] else 'rgba(255, 0, 0, 0.2)'
+        fillcolor = 'rgba(0, 255, 0, 0.2)' if df[actual_col][i] >= df[target_col][i] else 'rgba(255, 0, 0, 0.2)'
         fill_between_lines.append(go.Scatter(
             x=[df['report_date'][i], df['report_date'][i+1], df['report_date'][i+1], df['report_date'][i]],
-            y=[df['mtd_actual'][i], df['mtd_actual'][i+1], df['mtd_target_norm'][i+1], df['mtd_target_norm'][i]],
+            y=[df[actual_col][i], df[actual_col][i+1], df[target_col][i+1], df[target_col][i]],
             fill='toself',
             mode='lines',
             line=dict(width=0),  # Hide the line
             fillcolor=fillcolor,
-            showlegend=False
+            showlegend=False,
+            hoverinfo='skip'
         ))
 
     # Create figure and add traces
@@ -397,7 +420,8 @@ def daily_chart(df):
     # Update layout
     fig.update_layout(title='Actual vs Target',
                     xaxis_title='Date',
-                    yaxis_title='Sales',
+                    yaxis_title='Burpee',
+                    hovermode='x unified',
                     showlegend=True)
 
     # Show the figure
@@ -410,6 +434,6 @@ def daily_chart(df):
 
 
 with tab2:
-    st.write('Đang phát triển')
-    st.dataframe(user_data_daily)
-    st.plotly_chart(daily_chart(user_data_daily))
+    # st.write('Đang phát triển')
+    # st.dataframe(user_data_daily)
+    st.plotly_chart(daily_chart(user_data_daily, 'mtd_actual', 'mtd_target_norm'))
