@@ -78,6 +78,19 @@ def get_data_daily(from_date, select_date):
     dta_mtd_actual = db.execute(query).fetch_df()
     return dta_mtd_actual
 
+@st.cache_data
+def get_user_data_daily(user, from_date, select_date):
+    query = rf'''
+    SELECT 
+        *
+    FROM data_daily a 
+    WHERE report_date between '{from_date}'::date and '{select_date}'::date
+    and user = '{user}'
+    '''
+    # st.write(query)
+    dta_mtd_actual = db.execute(query).fetch_df()
+    return dta_mtd_actual
+
 # Function to generate random color
 # @st.cache_data
 def random_color():
@@ -261,9 +274,17 @@ with tab1:
     # Get the start of the current month
     with col1:
         start_of_month = current_date.replace(day=1)
-
-        # from_date = st.date_input('Select date', value=start_of_month)
         select_date = st.date_input('Select date', value=current_date)
+with tab2:
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        from_date = st.date_input('From date', value=start_of_month)
+    with col2:
+        select_date2 = st.date_input('To date', value=current_date, key='todate2')
+    with col3:
+        user_data = get_data_daily(from_date, select_date2)
+        users = list(set(user_data['user']))
+        select_user = st.selectbox(label='Select user', options=users)
 
 
 
@@ -281,7 +302,7 @@ dta_daily_summary = get_data_daily_summary(select_date)
 dta_monthly = get_data_monthly(select_date)
 # st.dataframe(dta_daily_summary)
 
-
+user_data_daily = get_user_data_daily(select_user, from_date, select_date2)
 # Show the figure
 
 
@@ -325,5 +346,70 @@ with tab1:
         with st.container(border=True):
             st.plotly_chart(chart_daily(dta_chart))
 
+# Tab Individual:
+def daily_chart(df):
+
+    # Create traces for the actual and budget lines
+
+# Example dataframe
+
+
+    # Example dataframe
+    # data = {
+    #     'report_date': pd.date_range(start='2023-09-01', periods=10, freq='D'),
+    #     'mtd_actual': [200, 300, 250, 400, 450, 500, 600, 550, 700, 650],
+    #     'mtd_target_norm': [220, 320, 270, 390, 430, 480, 620, 560, 710, 670]
+    # }
+
+    # df = pd.DataFrame(data)
+
+    # Create traces for the actual and budget lines
+    actual_trace = go.Scatter(x=df['report_date'], y=df['mtd_actual'], mode='lines', name='Actual Sales', line=dict(color='blue'))
+    target_trace = go.Scatter(x=df['report_date'], y=df['mtd_target_norm'], mode='lines', name='Budget Sales', line=dict(color='orange'))
+
+    # Create traces to fill the area between actual and budget sales with green or red
+    fill_between_lines = []
+
+    for i in range(len(df)-1):
+        # If actual >= budget, fill with light green, else fill with light red
+        fillcolor = 'rgba(0, 255, 0, 0.2)' if df['mtd_actual'][i] >= df['mtd_target_norm'][i] else 'rgba(255, 0, 0, 0.2)'
+        fill_between_lines.append(go.Scatter(
+            x=[df['report_date'][i], df['report_date'][i+1], df['report_date'][i+1], df['report_date'][i]],
+            y=[df['mtd_actual'][i], df['mtd_actual'][i+1], df['mtd_target_norm'][i+1], df['mtd_target_norm'][i]],
+            fill='toself',
+            mode='lines',
+            line=dict(width=0),  # Hide the line
+            fillcolor=fillcolor,
+            showlegend=False
+        ))
+
+    # Create figure and add traces
+    fig = go.Figure()
+
+    # Add the filling between actual and budget traces
+    for trace in fill_between_lines:
+        fig.add_trace(trace)
+
+    # Add the actual and budget lines
+    fig.add_trace(target_trace)
+    fig.add_trace(actual_trace)
+
+    # Update layout
+    fig.update_layout(title='Actual vs Target',
+                    xaxis_title='Date',
+                    yaxis_title='Sales',
+                    showlegend=True)
+
+    # Show the figure
+    # fig.show()
+
+
+
+    # Show the figure
+    return fig
+
+
 with tab2:
     st.write('Đang phát triển')
+    st.dataframe(user_data_daily)
+    st.plotly_chart(daily_chart(user_data_daily))
