@@ -166,6 +166,7 @@ for sheet_name in sheets:
     # tinh toan accumulate
     dta.to_parquet(Path(__file__).parent/'data'/'daily'/rf"dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
     print(sheet_name)
+    print(dta.groupby(by='report_date')['Total'].sum())
 
 
 import subprocess
