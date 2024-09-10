@@ -394,14 +394,15 @@ def daily_chart(df, actual_col, target_col):
         mode='lines', 
         name='Actual', 
         line=dict(color='blue'),
-        customdata=df[['difference', 'complete_percentage']],
+        customdata=df[[target_col,'difference', 'complete_percentage']],
         hovertemplate=(
             # 'Date: %{x}<br>' +
             'Actual: %{y:,.0f}<br>' +
             'Target: %{customdata[0]:,.0f}<br>' +
-            'Difference: %{customdata[0]:,.0f}<br>' +
-            'Complete: %{customdata[1]:.2%}<extra></extra>'
+            'Difference: %{customdata[1]:,.0f}<br>' +
+            'Complete: %{customdata[2]:.2%}<extra></extra>'
         ),
+        hoverinfo='skip',
         connectgaps=False  # Do not connect gaps
         )
     target_trace = go.Scatter(
@@ -418,6 +419,7 @@ def daily_chart(df, actual_col, target_col):
         # 'Difference: %{customdata[1]:,.0f}<br>' +
         # 'Complete %: %{customdata[2]:.2%}<extra></extra>'
         # )
+        hoverinfo='skip',
         connectgaps=False  # Do not connect gaps
         )
 
@@ -458,7 +460,8 @@ def daily_chart(df, actual_col, target_col):
                     xaxis_type='date',  # Ensure x-axis is treated as a date
                     xaxis=dict(
                     showgrid=True,  # Show grid to enhance readability
-                    dtick="M1"  # Show ticks every month
+                    # tickformat="%b %d, %Y",  # Format for the date labels
+                    # dtick="M604800000"  # 1 week in milliseconds (604800000 ms)  # Show ticks every month
                     )
     )
 
