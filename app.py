@@ -381,8 +381,11 @@ def daily_chart(df, actual_col, target_col):
 # Example dataframe
 
     # Calculate difference and complete percentage
+    df['report_date'] = pd.to_datetime(df['report_date'])
     df['difference'] = df[actual_col] - df[target_col]
     df['complete_percentage'] = df[actual_col] / df[target_col]
+    df = df.sort_values(by='report_date')
+    df = df.reset_index(drop=True)
 
     # Create traces for the actual and budget lines
     actual_trace = go.Scatter(
@@ -398,7 +401,8 @@ def daily_chart(df, actual_col, target_col):
             # 'Target: %{customdata[0]:,.0f}<br>' +
             'Difference: %{customdata[0]:,.0f}<br>' +
             'Complete: %{customdata[1]:.2%}<extra></extra>'
-        )
+        ),
+        connectgaps=False  # Do not connect gaps
         )
     target_trace = go.Scatter(
         x=df['report_date'], 
@@ -414,6 +418,7 @@ def daily_chart(df, actual_col, target_col):
         # 'Difference: %{customdata[1]:,.0f}<br>' +
         # 'Complete %: %{customdata[2]:.2%}<extra></extra>'
         # )
+        connectgaps=False  # Do not connect gaps
         )
 
     # Create traces to fill the area between actual and budget sales with green or red
@@ -449,7 +454,13 @@ def daily_chart(df, actual_col, target_col):
                     xaxis_title='Date',
                     yaxis_title='Burpee',
                     hovermode='x unified',
-                    showlegend=True)
+                    showlegend=True,
+                    xaxis_type='date',  # Ensure x-axis is treated as a date
+                    xaxis=dict(
+                    showgrid=True,  # Show grid to enhance readability
+                    dtick="M1"  # Show ticks every month
+                    )
+    )
 
     # Show the figure
     # fig.show()
