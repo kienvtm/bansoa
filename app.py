@@ -131,6 +131,29 @@ def chart_burpee_target(data):
     return fig
 
 @st.cache_data
+def missing_training():
+    query = '''
+    WITH cte_dta as(
+    SELECT 
+        *
+        , row_number() OVER w AS stt
+    FROM data_daily
+    WHERE Total > 0
+    WINDOW w AS (PARTITION BY USER ORDER BY report_date desc)
+    )
+    SELECT 
+        a.USER 
+        , a.report_date last_report_date 
+        , a.Total 
+        , current_date() - INTERVAL '1 day' - a.report_date no_training
+    FROM cte_dta a
+    WHERE stt = 1
+    ORDER BY a.USER, a.report_date asc
+    '''
+    missing_dta = db.execute(query).fetch_df()
+    return missing_dta
+
+@st.cache_data
 def chart_daily(data):
     # Create the horizontal bar chart
     data = data.sort_values(by="mtd_flg_daily")
@@ -303,9 +326,10 @@ dta_monthly = get_data_monthly(select_date)
 # st.dataframe(dta_daily_summary)
 
 user_data_daily = get_user_data_daily(select_user, from_date, select_date2)
-# Show the figure
 
-
+missing_dta = missing_training()
+missing_dta.sort_values(by='last_report_date', inplace=True)
+missing_dta['last_report_date'] = missing_dta['last_report_date'].dt.strftime('%Y-%m-%d')
 
 with tab1:
     total_target = dta_chart['Target'].sum()
@@ -345,6 +369,9 @@ with tab1:
     with col2:
         with st.container(border=True):
             st.plotly_chart(chart_daily(dta_chart))
+    with st.container(border=True):
+        st.write('Bao lau roi ban chua tap?')
+        st.dataframe(missing_dta[['user', 'last_report_date', 'no_training']])
 
 # Tab Individual:
 def daily_chart(df, actual_col, target_col):
