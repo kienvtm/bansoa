@@ -71,6 +71,8 @@ def extract_daily(df3, sheet_name):
     df_daily2.rename(columns={'None|None':'report_date'}, inplace=True)
     df_daily2.drop(columns='variable', inplace=True)
     df_daily2.dropna(subset='value', inplace=True)
+    df_daily2.dropna(subset='report_date', inplace=True)
+    df_daily2['report_date'] = df_daily2['report_date'].astype(str)
     df_daily3 = df_daily2.query("value!=0").pivot(columns='criteria', index=['user', 'report_date'], values='value').reset_index()
     df_daily3['report_date'] = df_daily3['report_date'].astype('str') + '/' + sheet_name
     df_daily3['report_date'] = pd.to_datetime(df_daily3['report_date'], format='%d/%m/%Y')
@@ -115,10 +117,10 @@ sheets = [
         # '8/2023',
         # '7/2023',
         # '6/2023',
-        # '5/2023',
-        # '4/2023',
-        # '3/2023',
-        # '2/2023',
+        '5/2023',
+        '4/2023',
+        '3/2023',
+        '2/2023',
         # '1/2023',
 ]
 for sheet_name in sheets:
