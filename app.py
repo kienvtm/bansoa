@@ -398,7 +398,7 @@ def daily_chart(df, actual_col, target_col):
         hovertemplate=(
             # 'Date: %{x}<br>' +
             'Actual: %{y:,.0f}<br>' +
-            # 'Target: %{customdata[0]:,.0f}<br>' +
+            'Target: %{customdata[0]:,.0f}<br>' +
             'Difference: %{customdata[0]:,.0f}<br>' +
             'Complete: %{customdata[1]:.2%}<extra></extra>'
         ),
