@@ -174,7 +174,18 @@ file_folder = Path(__file__).parent/'data'/'daily'
 df = pd.DataFrame()
 for file in Path(file_folder).glob('*.parquet'):
     dfx = pd.read_parquet(file)
-    df = pd.concat(objs=[df, dfx], axis=0, ignore_index=True)
+    df = pd.concat(objs=[dfx, df], axis=0, ignore_index=True)
+
+df = df.fillna(0)
+for col in ['Burpee', 'Core','Pushup', 'Run', 'Squat','Plank']:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+    df[col] = df[col].fillna(0)
+    new_col = 'mtd_'+col
+    df[new_col] = pd.to_numeric(df[new_col], errors='coerce')
+    df[new_col] = df[new_col].fillna(0)
+        
+# print(df.info())
+
 # tinh toan accumulate
 df['mtd_non_burpee'] =  df['mtd_Run']*20 + df['mtd_Pushup']/2 + df['mtd_Core']/2 + df['mtd_Squat']/3 + df['mtd_Plank']*14/2
 df['mtd_actual'] = df['mtd_Burpee'] + df['mtd_non_burpee']
@@ -195,6 +206,35 @@ df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee'] + df.loc[flt, 'mtd_non_bur
 
 flt = (df['user']=='Hiệp') & (df['report_month'] >= '2023-11-01') & (df['report_month'] <= '2023-12-31') & (df['mtd_non_burpee'] > df['mtd_Burpee']*2)
 df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*3
+
+# chinh rule cho Quynh tu thang 6/2023
+flt = (df["user"]=="Quỳnh") & (df['report_month']>='2023-06-01') 
+df.loc[flt, 'mtd_actual'] = df.loc[flt,'mtd_Burpee'] + df.loc[flt,'mtd_non_burpee']
+
+flt = (df["user"]=="Quỳnh") & (df['report_month']>='2023-06-01') \
+    & ((df['mtd_Run']*20+df['mtd_Core']/2+df['mtd_Squat']/3)>(df['mtd_Burpee']+df['mtd_Pushup']/2))
+df.loc[flt, 'mtd_actual'] = (df.loc[flt, 'mtd_Burpee'] + df.loc[flt, 'mtd_Pushup']/2)*2.5
+
+# chinh rule cho An tu thang 8/2024
+flt = (df["user"]=="An") & (df['report_month']>='2024-08-01') 
+df.loc[flt, 'mtd_actual'] = df.loc[flt,'mtd_Burpee'] + df.loc[flt,'mtd_non_burpee']
+
+# chinh rule cho Duc tu thang 3/2023
+flt = (df["user"]=="Đức") & (df['report_month']>='2023-03-01') 
+df.loc[flt, 'mtd_actual'] = df.loc[flt,'mtd_Burpee'] + df.loc[flt,'mtd_non_burpee']
+
+flt = (df["user"]=="Đức") & (df['report_month']>='2023-03-01') \
+    & ((df['mtd_Run']*20+df['mtd_Core']/2+df['mtd_Squat']/3)>(df['mtd_Burpee']+df['mtd_Pushup']/2))
+df.loc[flt, 'mtd_actual'] = (df.loc[flt, 'mtd_Burpee'] + df.loc[flt, 'mtd_Pushup']/2)*2.5
+
+# chinh rule cho Thien tu thang 8/2023
+flt = (df["user"]=="Thiện") & (df['report_month']>='2023-08-01') 
+df.loc[flt, 'mtd_actual'] = df.loc[flt,'mtd_Burpee'] + df.loc[flt,'mtd_non_burpee']
+
+flt = (df["user"]=="Thiện") & (df['report_month']>='2023-08-01') \
+    & ((df['mtd_Pushup']/2+df['mtd_Core']/2+df['mtd_Squat']/3)>(df['mtd_Burpee']*1.5))
+df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*2.5 + df.loc[flt, 'mtd_Run']*20
+
 
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
