@@ -176,12 +176,25 @@ for file in Path(file_folder).glob('*.parquet'):
     dfx = pd.read_parquet(file)
     df = pd.concat(objs=[df, dfx], axis=0, ignore_index=True)
 # tinh toan accumulate
-df['mtd_non_burpee'] =  df['mtd_Run']*20 + df['mtd_Pushup']/2 + df['Core']/2 + df['mtd_Squat']/3 + df['mtd_Plank']*14/2
+df['mtd_non_burpee'] =  df['mtd_Run']*20 + df['mtd_Pushup']/2 + df['mtd_Core']/2 + df['mtd_Squat']/3 + df['mtd_Plank']*14/2
 df['mtd_actual'] = df['mtd_Burpee'] + df['mtd_non_burpee']
 
 # them dieu kien rang buoc ve so Burpee toi thieu
 flt = df['mtd_non_burpee'] > df['mtd_Burpee']*1.5
-df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*1.5
+df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*2.5
+
+
+# chinh rule cho Hiep tu thang 01/2024
+flt = (df['user']=='Hiệp') & (df['report_month'] >= '2024-01-01')
+df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee'] + df.loc[flt, 'mtd_non_burpee']
+
+
+# chinh rule cho Hiep tu thang 11/2023 - 12/2023
+flt = (df['user']=='Hiệp') & (df['report_month'] >= '2023-11-01') & (df['report_month'] <= '2023-12-31')
+df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee'] + df.loc[flt, 'mtd_non_burpee']
+
+flt = (df['user']=='Hiệp') & (df['report_month'] >= '2023-11-01') & (df['report_month'] <= '2023-12-31') & (df['mtd_non_burpee'] > df['mtd_Burpee']*2)
+df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*3
 
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
