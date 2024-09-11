@@ -165,7 +165,7 @@ for sheet_name in sheets:
             dta[new_col] = dta.sort_values(by=['user', 'report_date']).groupby(['user'])[col].cumsum()
         except Exception as e:
             print(e)
-    # tinh toan accumulate
+
     dta.to_parquet(Path(__file__).parent/'data'/'daily'/rf"dta_{str(sheet_name).replace('/', '-')}.parquet", index=False )
     print(sheet_name)
     print(dta.groupby(by='report_date')['Total'].sum())
@@ -175,6 +175,13 @@ df = pd.DataFrame()
 for file in Path(file_folder).glob('*.parquet'):
     dfx = pd.read_parquet(file)
     df = pd.concat(objs=[df, dfx], axis=0, ignore_index=True)
+# tinh toan accumulate
+df['mtd_non_burpee'] =  df['mtd_Run']*20 + df['mtd_Pushup']/2 + df['Core']/2 + df['mtd_Squat']/3 + df['mtd_Plank']*14/2
+df['mtd_actual'] = df['mtd_Burpee'] + df['mtd_non_burpee']
+
+# them dieu kien rang buoc ve so Burpee toi thieu
+flt = df['mtd_non_burpee'] > df['mtd_Burpee']*1.5
+df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*1.5
 
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
