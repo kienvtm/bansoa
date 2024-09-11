@@ -220,7 +220,8 @@ def chart_workout_heatmap(df):
     Core: {row['Core']:,.0f}<br>
     Pushup: {row['Pushup']:,.0f}<br>
     Squat: {row['Squat']:,.0f}<br>
-    Run: {row['Run']:,.1f}km
+    Run: {row['Run']:,.1f}km<br>
+    Plank: {row['Plank']:,.1f} phut
     ''', 
         axis=1).values.reshape(heatmap_data.shape)
 
@@ -331,6 +332,7 @@ missing_dta = missing_training()
 missing_dta.sort_values(by='last_report_date', inplace=True)
 missing_dta['last_report_date'] = missing_dta['last_report_date'].dt.strftime('%Y-%m-%d')
 
+
 with tab1:
     total_target = dta_chart['Target'].sum()
     total_actual = dta_chart['mtd_actual'].sum()
@@ -339,6 +341,7 @@ with tab1:
     pushup = dta_chart['mtd_Pushup'].sum()
     run = dta_chart['mtd_Run'].sum()
     squat = dta_chart['mtd_Squat'].sum()
+    plank = dta_chart['mtd_Plank'].sum()
     # with st.container(border=True):
     col10, col20 = st.columns(2)
     with col10:
@@ -354,6 +357,7 @@ with tab1:
             col3.metric("Core", f"{core:,.0f}")
             col1.metric("Squat", f"{squat:,.0f}")
             col2.metric("Run", f"{run:,.1f}km")
+            col3.metric("Plank", f"{plank:,.0f}p")
         # with st.container(border=True):
     with col20:
         with st.container(border=True):
@@ -372,6 +376,8 @@ with tab1:
     with st.container(border=True):
         st.write('Bao lau roi ban chua tap?')
         st.dataframe(missing_dta[['user', 'last_report_date', 'no_training']])
+
+st.dataframe(dta_chart)
 
 # Tab Individual:
 def daily_chart(df, actual_col, target_col):
@@ -477,5 +483,5 @@ def daily_chart(df, actual_col, target_col):
 with tab2:
     # st.write('Đang phát triển')
     user_data_daily.fillna(0, inplace=True)
-    st.dataframe(user_data_daily)
+    # st.dataframe(user_data_daily)
     st.plotly_chart(daily_chart(user_data_daily, 'mtd_actual', 'mtd_target_norm'))
