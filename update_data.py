@@ -179,25 +179,27 @@ for file in Path(file_folder).glob('*.parquet'):
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
 
-# # Function to run a git command
-# def run_git_command(command):
-#     result = subprocess.run(command, shell=True, capture_output=True, text=True)
-#     if result.returncode == 0:
-#         print(f"Command succeeded: {command}")
-#     else:
-#         print(f"Command failed: {command}\nError: {result.stderr}")
+# Function to run a git command
+def run_git_command(command):
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if result.returncode == 0:
+        print(f"Command succeeded: {command}")
+    else:
+        print(f"Command failed: {command}\nError: {result.stderr}")
 
-# # Example usage
+# Example usage
 
-# # 1. Add changes (stage files)
-# run_git_command("git add .")
+# 1. Add changes (stage files)
+run_git_command("git fetch")
+run_git_command("git pull")
+run_git_command("git add .")
 
-# # 2. Commit the changes
-# commit_message = "Update data"
-# run_git_command(f'git commit -m "{commit_message}"')
+# 2. Commit the changes
+commit_message = "Update data"
+run_git_command(f'git commit -m "{commit_message}"')
 
-# # 3. Push the changes
-# # branch_name = "main"  # Replace with your branch name
-# # run_git_command(f"git push origin {branch_name}")
-# run_git_command(f"git push")
+# 3. Push the changes
+# branch_name = "main"  # Replace with your branch name
+# run_git_command(f"git push origin {branch_name}")
+run_git_command(f"git push")
 
