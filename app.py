@@ -377,7 +377,7 @@ with tab1:
         st.write('Bao lau roi ban chua tap?')
         st.dataframe(missing_dta[['user', 'last_report_date', 'no_training']])
 
-st.dataframe(dta_chart)
+# st.dataframe(dta_chart)
 
 # Tab Individual:
 def daily_chart(df, actual_col, target_col):
