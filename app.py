@@ -17,10 +17,10 @@ if st.button("Clear All"):
     st.cache_data.clear()
 
 # data folder path
-cwd = Path(__file__).parent / 'data' / 'daily'
+# cwd = Path(__file__).parent / 'data' / 'dta_daily.parquet'
 
 # daily file
-dta_daily_path = cwd.joinpath('*.parquet')
+dta_daily_path = Path(__file__).parent / 'data' / 'dta_daily.parquet'
 
 
 db = duckdb.connect()
@@ -476,5 +476,6 @@ def daily_chart(df, actual_col, target_col):
 
 with tab2:
     # st.write('Đang phát triển')
-    # st.dataframe(user_data_daily)
+    user_data_daily.fillna(0, inplace=True)
+    st.dataframe(user_data_daily)
     st.plotly_chart(daily_chart(user_data_daily, 'mtd_actual', 'mtd_target_norm'))
