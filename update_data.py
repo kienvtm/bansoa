@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import os
 import subprocess
+from datetime import datetime as dt
 pd.set_option('mode.chained_assignment', None)
 
 # %%
@@ -234,7 +235,7 @@ df.loc[flt, 'mtd_actual'] = df.loc[flt,'mtd_Burpee'] + df.loc[flt,'mtd_non_burpe
 flt = (df["user"]=="Thiện") & (df['report_month']>='2023-08-01') \
     & ((df['mtd_Pushup']/2+df['mtd_Core']/2+df['mtd_Squat']/3)>(df['mtd_Burpee']*1.5))
 df.loc[flt, 'mtd_actual'] = df.loc[flt, 'mtd_Burpee']*2.5 + df.loc[flt, 'mtd_Run']*20
-
+df['cob_dt']= dt.now()
 
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
