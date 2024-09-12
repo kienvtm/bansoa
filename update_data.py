@@ -239,15 +239,6 @@ df['cob_dt']= dt.now()
 
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
-
-# Function to run a git command
-def run_git_command(command):
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    if result.returncode == 0:
-        print(f"Command succeeded: {command}")
-    else:
-        print(f"Command failed: {command}\nError: {result.stderr}")
-
 # Example usage
 def git_commit_and_push(repo_path, commit_message):
     # Fetch the latest changes from the remote repository
@@ -255,7 +246,7 @@ def git_commit_and_push(repo_path, commit_message):
     # subprocess.run(["git", "-C", repo_path, "pull"], check=True)
 
     # Change directory to the repo path
-    subprocess.run(["git", "-C", repo_path, "add", "."], check=True)
+    subprocess.run(["git", "-C", repo_path, "add", "*.parquet"], check=True)
     
     # Commit with the provided message
     subprocess.run(["git", "-C", repo_path, "commit", "-m", commit_message], check=True)
