@@ -28,6 +28,17 @@ db.execute(f"CREATE or replace temp VIEW data_daily AS SELECT * FROM read_parque
 # db.execute(fr"create or replace temp view data_daily as select * from read_parquet('C:\Users\kienv\bansoa\data\daily\*.parquet', union_by_name=True)")
 
 @st.cache_data
+def get_lastest():
+    query = rf'''
+    SELECT 
+        max(cob_dt) cob_dt
+    FROM data_daily
+    '''
+    dta_mtd_actual = db.execute(query).fetch_df()
+    # st.write(query)
+    return dta_mtd_actual
+
+@st.cache_data
 def get_data(select_date):
     query = rf'''
     SELECT 
@@ -287,6 +298,9 @@ def chart_workout_heatmap(df):
         margin=dict(l=0.1, r=0.1, t=50, b=0.1),  # Adjust outer margins for thinner outer border
     )
     return fig
+
+max_cobdt = get_lastest()
+st.dataframe(max_cobdt)
 
 tab1, tab2 = st.tabs(['Summary Report','Individual Report'])
 
