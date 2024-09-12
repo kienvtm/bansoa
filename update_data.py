@@ -250,8 +250,8 @@ def run_git_command(command):
 # Example usage
 
 # 1. Add changes (stage files)
-run_git_command("git fetch")
-run_git_command("git pull")
+#run_git_command("git fetch")
+#run_git_command("git pull")
 run_git_command("git add .")
 
 # 2. Commit the changes
