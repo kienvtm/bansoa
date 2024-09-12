@@ -248,18 +248,24 @@ def run_git_command(command):
         print(f"Command failed: {command}\nError: {result.stderr}")
 
 # Example usage
+def git_commit_and_push(repo_path, commit_message):
+    # Fetch the latest changes from the remote repository
+    # subprocess.run(["git", "-C", repo_path, "fetch"], check=True)
+    # subprocess.run(["git", "-C", repo_path, "pull"], check=True)
 
-# 1. Add changes (stage files)
-#run_git_command("git fetch")
-#run_git_command("git pull")
-run_git_command("git add .")
+    # Change directory to the repo path
+    subprocess.run(["git", "-C", repo_path, "add", "."], check=True)
+    
+    # Commit with the provided message
+    subprocess.run(["git", "-C", repo_path, "commit", "-m", commit_message], check=True)
+    
+    # Push to the remote repository
+    subprocess.run(["git", "-C", repo_path, "push"], check=True)
 
-# 2. Commit the changes
-commit_message = "Update data"
-run_git_command(f'git commit -m "{commit_message}"')
-
-# 3. Push the changes
-# branch_name = "main"  # Replace with your branch name
-# run_git_command(f"git push origin {branch_name}")
-run_git_command(f"git push")
-
+# Example usage:
+repository_path = Path(__file__).parent
+commit_msg = "upload new data"
+try:
+    git_commit_and_push(repository_path, commit_msg)
+except Exception as e:
+    print(e)
