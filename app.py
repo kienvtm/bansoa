@@ -11,10 +11,10 @@ import random
 st.set_page_config(layout="wide")
 
 st.title('BẠN SỢ À Report')
-if st.button("Clear All"):
+# if st.button("Clear All"):
     # Clear values from *all* all in-memory and on-disk data caches:
     # i.e. clear values from both square and cube
-    st.cache_data.clear()
+st.cache_data.clear()
 
 # data folder path
 # cwd = Path(__file__).parent / 'data' / 'dta_daily.parquet'
@@ -300,7 +300,7 @@ def chart_workout_heatmap(df):
     return fig
 
 max_cobdt = get_lastest()
-st.dataframe(max_cobdt)
+st.write('Last update data',max_cobdt['cob_dt'].max())
 
 tab1, tab2 = st.tabs(['Summary Report','Individual Report'])
 
