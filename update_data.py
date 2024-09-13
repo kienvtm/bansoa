@@ -239,6 +239,13 @@ df['cob_dt']= dt.now()
 
 df.to_parquet(Path(__file__).parent/'data'/"dta_daily.parquet", index=False )
 
+def run_git_command(command):
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if result.returncode == 0:
+        print(f'Command succeeded: {command}')
+    else:
+        print(f'Command failed: {command}\nError: {result.stderr}')
+
 # Example usage
 def git_commit_and_push(repo_path, commit_message):
     # Fetch the latest changes from the remote repository
@@ -258,6 +265,11 @@ def git_commit_and_push(repo_path, commit_message):
 repository_path = Path(__file__).parent
 commit_msg = "upload new data"
 try:
+    # command = 'eval "$(ssh-agent -s)"'
+    # run_git_command(command)
+    # command = 'ssh-add ~/.ssh/id_ed25519'
+    # run_git_command(command)
+
     git_commit_and_push(repository_path, commit_msg)
 except Exception as e:
     print(e)
