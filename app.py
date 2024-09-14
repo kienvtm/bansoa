@@ -219,8 +219,11 @@ def summary_kpi(dta_daily_summary):
 
 @st.cache_data
 def chart_workout_heatmap(df):
+    # df = df.reset_index(drop=True)
+
     # Pivoting the dataframe
     heatmap_data = df.pivot(index='user', columns='report_date', values='Total')
+    heatmap_data = heatmap_data.sort_index()
 
     # Create custom hover text with burpee and run details
     hover_text = df.apply(
@@ -235,6 +238,9 @@ def chart_workout_heatmap(df):
     Plank: {row['Plank']:,.1f} phut
     ''', 
         axis=1).values.reshape(heatmap_data.shape)
+    hover_text = hover_text[hover_text[:, 0].argsort()]
+
+    # st.dataframe(hover_text)
 
     # Create text array that replaces 0 with '-'
     text_data = heatmap_data.applymap(lambda x: '' if x == 0 else f"{x:,.0f}")
@@ -248,9 +254,6 @@ def chart_workout_heatmap(df):
         [0.3, '#71ff33'],        # Red for value 0
         [0.4, '#33ffe9'],        # Red for value 0
         [0.5, '#337aff'],        # Red for value 0
-        # [0.6, '#be33ff'],        # Red for value 0
-        # [0.7, '#fc33ff'],        # Red for value 0
-        # [0.8, '#fc33ff'],        # Red for value 0
         [1, '#fc33ff'],        # Red for value 0
     ]
 
@@ -259,20 +262,10 @@ def chart_workout_heatmap(df):
         z=heatmap_data.values,
         x=heatmap_data.columns,
         y=heatmap_data.index,
-        # colorscale='blackbody',
-        # colorscale='rainbow_r',
-        # colorscale='plasma',
-        # colorscale='turbo',
-        # colorscale='blackbody',
-        # colorscale='plotly3_r',
-        # colorscale='jet_r',
-        # colorscale='hsv',
         colorscale=custom_color_scale,
         hoverongaps=True,
         xgap=2,  # Horizontal gap between the cells
         ygap=2,   # Vertical gap between the cells
-        # colorscale=[[0, 'white'], [1, 'green']],  # Color scale from white to green
-        # text=heatmap_data.values,  # Data text to display in cells
         hoverinfo='text',  # Show custom hover information
         hovertext=hover_text,  # Set the custom hover text
         text=text_data.values,  # Use the hover text for detailed info
@@ -280,21 +273,11 @@ def chart_workout_heatmap(df):
         textfont={"size": 14},   # Adjust font size of the text
         showscale=True  # Display the color scale
     ))
-
-    # # Update texttemplate to display 0 as '-'
-    # fig.update_traces(texttemplate="%{z:,.0f}", 
-    #                 customdata=heatmap_data.values,
-    #                 text=heatmap_data.applymap(lambda x: '-' if x == 0 else x))
-
     # Update layout
     fig.update_layout(
-        # xaxis_title='Date',
-        # yaxis_title='User',
         title='Workout Calendar',
         xaxis=dict(showgrid=False),
         yaxis=dict(showgrid=False),
-        # plot_bgcolor='grey',  # Set the plot background color to black (for borders)
-        # paper_bgcolor='white',  # Keep the paper background 
         margin=dict(l=0.1, r=0.1, t=50, b=0.1),  # Adjust outer margins for thinner outer border
     )
     return fig
